@@ -8,13 +8,41 @@ const checkAccess = require("../middlewares/checkAccess");
 const userRouter = express.Router();
 
 // Only admin can see all member data
-userRouter.get("/", checkAccess("Admin"), async(req,res) =>{
+userRouter.get("/users", checkAccess("Admin"), async(req,res) =>{
     try{
         const members = await UserModel.find();
         res.status(200).json({msg:"Members data fetch successfully", members})
         
     }catch(err){
         res.send(`Err occured while feching members db:${err}`)
+    }
+})
+
+// Spasific Id user data Fetch
+
+userRouter.get("/users/:id", checkAccess("Admin"), async(req,res) =>{
+    const{id} = req.params
+  
+    try{
+        const members = await UserModel.findById(id);
+        res.status(200).json({msg:" Spasific Id User data fetched successfully", members})
+        
+    }catch(err){
+        res.send(`Err occured while feching members db:${err}`)
+    }
+})
+
+// Update Spasific user id  data 
+
+userRouter.patch("/users/:id", checkAccess("Admin"), async(req,res) =>{
+    const{id} = req.params
+    
+    try{
+        const updateUser = await UserModel.findByIdAndUpdate({_id:id}, req.body)
+        res.status(200).json({msg:" Spasific Id User data Updated successfully", updateUser})
+        
+    }catch(err){
+        res.send(`Err occured while updateing user db:${err}`)
     }
 })
 
